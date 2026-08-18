@@ -131,3 +131,10 @@ docker-compose up --build
 * `GET /api/v1/audits/{audit_id}` — Fetch audit state, detected issues, repair attempts, and execution logs.
 * `GET /api/v1/repositories/` — List all registered repositories.
 * `GET /api/v1/metrics/` — Fetch platform evaluation metrics (repair success rate, latency, token usage).
+
+---
+
+## 👤 Author
+
+**Ayan Islam**
+
