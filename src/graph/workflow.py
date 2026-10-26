@@ -14,7 +14,7 @@ from src.agents.github_integration import GitHubIntegrationAgent
 from src.core.config import settings
 from src.core.logger import logger
 
-# Initialize agent instances
+# initialize agent instances
 code_analysis_agent = CodeAnalysisAgent()
 context_retrieval_agent = ContextRetrievalAgent()
 root_cause_agent = RootCauseAnalysisAgent()
@@ -28,7 +28,7 @@ memory_agent = MemoryAgent()
 github_agent = GitHubIntegrationAgent()
 
 
-# Node wrapper functions
+# node wrapper functions
 def node_code_analysis(state: AuditState) -> AuditState:
     return code_analysis_agent.run(state)
 
@@ -63,7 +63,7 @@ def node_github(state: AuditState) -> AuditState:
     return github_agent.run(state)
 
 
-# Conditional Router
+# conditional router
 def route_validation_result(state: AuditState) -> str:
     status = state.get("validation_status", "REJECTED")
     retry_count = state.get("retry_count", 0)
@@ -94,7 +94,7 @@ def create_audit_workflow() -> StateGraph:
     """
     builder = StateGraph(AuditState)
 
-    # 1. Register Nodes
+    # 1. register nodes
     builder.add_node("code_analysis", node_code_analysis)
     builder.add_node("context_retrieval", node_context_retrieval)
     builder.add_node("root_cause", node_root_cause)
@@ -107,7 +107,7 @@ def create_audit_workflow() -> StateGraph:
     builder.add_node("memory", node_memory)
     builder.add_node("github", node_github)
 
-    # 2. Add Linear Edges
+    # 2. add linear edges
     builder.set_entry_point("code_analysis")
     builder.add_edge("code_analysis", "context_retrieval")
     builder.add_edge("context_retrieval", "root_cause")
@@ -117,7 +117,7 @@ def create_audit_workflow() -> StateGraph:
     builder.add_edge("patch_application", "test_execution")
     builder.add_edge("test_execution", "validation")
 
-    # 3. Add Conditional Edge after Validation
+    # 3. add conditional edge after validation
     builder.add_conditional_edges(
         "validation",
         route_validation_result,
@@ -128,10 +128,10 @@ def create_audit_workflow() -> StateGraph:
         }
     )
 
-    # 4. Reflection loops back to repair planning
+    # 4. reflection loops back to repair planning
     builder.add_edge("reflection", "repair_planning")
 
-    # 5. Memory routes conditionally to GitHub (if approved) or END (if failed)
+    # 5. memory routes conditionally to github (if approved) or end (if failed)
     builder.add_conditional_edges(
         "memory",
         route_post_memory,
